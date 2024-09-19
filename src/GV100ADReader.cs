@@ -1,8 +1,8 @@
-﻿#region OpenPlzApi.GV100AD - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenPlzApi.GV100AD - Copyright (c) STÜBER SYSTEMS GmbH
 /*    
  *    OpenPlzApi.GV100AD 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (c) STÜBER SYSTEMS GmbH
  *
  *    Licensed under the MIT License, Version 2.0. 
  * 

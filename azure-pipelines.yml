@@ -77,10 +77,11 @@ stages:
     - task: DotNetCoreCLI@2
       displayName: 'Pack'
       inputs:
-        command: 'custom'
-        projects: 'src/OpenPlzApi.GV100AD.csproj'
-        custom: 'pack'
-        arguments: '/p:Configuration=$(BuildConfiguration) /p:PackageVersion=$(SemVersion) --no-build'
+        command: 'pack'
+        packagesToPack: 'src/OpenPlzApi.GV100AD.csproj'
+        nobuild: true
+        versioningScheme: 'byEnvVar'
+        versionEnvVar: 'SemVersion'
     - task: NuGetCommand@2
       displayName: 'Sign'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
@@ -88,20 +89,39 @@ stages:
         SM_CLIENT_CERT_FILE : $(SM_CLIENT_CERT_FILE.secureFilePath)
       inputs:
         command: 'custom'
-        arguments: 'sign $(Build.Repository.LocalPath)/**/*.nupkg -Timestamper http://timestamp.digicert.com -CertificateFingerprint $(SM_CERT_FINGERPRINT) -HashAlgorithm SHA256 -Verbosity detailed -Overwrite'
-
-- stage: Deploy  
+        arguments: 'sign $(Build.ArtifactStagingDirectory)/**/*.nupkg -Timestamper http://timestamp.digicert.com -CertificateFingerprint $(SM_CERT_FINGERPRINT) -HashAlgorithm SHA256 -Verbosity detailed -Overwrite'
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: drop
+      
+- stage: Deploy
   jobs:
   - job: 
     steps:
+    - download: current
+      artifact: drop
     - task: NuGetCommand@2
       displayName: 'Publish preview to internal feed'
       condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/main'))
       inputs:
         command: 'push'
-        packagesToPush: '$(Build.Repository.LocalPath)/**/*.nupkg;!$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
+        packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;!$(Pipeline.Workspace)/**/*.symbols.nupkg'
         nuGetFeedType: 'internal'
         publishVstsFeed: '340e7a34-33ea-4418-8b72-d55dcb74efa7/dd1a6c3c-4e29-44c2-a80d-9d6c7004ac57'
+    - task: NuGetCommand@2
+      displayName: 'Publish to nuget.org'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;!$(Pipeline.Workspace)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'STUEBER SYSTEMS | nuget.org'
+
+- stage: GitHub
+  jobs:
+  - job: 
+    steps:
+    - checkout: self
+      persistCredentials: true
     - task: PowerShell@2
       displayName: 'Push to GitHub'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
@@ -114,11 +134,3 @@ stages:
           git push github HEAD:main
           git push --tags github HEAD:main
         pwsh: true
-    - task: NuGetCommand@2
-      displayName: 'Publish to nuget.org'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-      inputs:
-        command: 'push'
-        packagesToPush: '$(Build.Repository.LocalPath)/**/*.nupkg;!$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'STUEBER SYSTEMS | nuget.org'

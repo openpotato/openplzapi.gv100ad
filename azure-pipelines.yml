@@ -93,6 +93,7 @@ stages:
 - stage: Deploy  
   jobs:
   - job: 
+    steps:
     - task: NuGetCommand@2
       displayName: 'Publish preview to internal feed'
       condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/main'))

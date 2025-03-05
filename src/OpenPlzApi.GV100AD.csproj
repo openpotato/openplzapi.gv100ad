@@ -5,12 +5,12 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>STÜBER SYSTEMS GmbH</Authors>
     <Company>STÜBER SYSTEMS GmbH</Company>
-    <Copyright>© 2024 STÜBER SYSTEMS GmbH</Copyright>
+    <Copyright>© 2025 STÜBER SYSTEMS GmbH</Copyright>
     <Product>OpenPlzApi.GV100AD</Product>
     <Description>Reader class for official GV100AD (Gemeindeverzeichnis) files</Description>
     <PackageLicenseUrl></PackageLicenseUrl>
     <NeutralLanguage></NeutralLanguage>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/openpotato/openplzapi.gv100ad</RepositoryUrl>

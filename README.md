@@ -5,7 +5,7 @@
 
 A .NET library for parsing GV100AD files (Gemeindeverzeichnis) provided by [Destatis](https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/_inhalt.html). 
 
-+ Supports .NET 8 and .NET 9
++ Supports .NET 10, .NET 9 and .NET 0
 + Supports all GV100AD record types:
   + Federal state (Bundesland, Satzart 10)
   + Government region (Regierungsbezirk, Satzart 20)

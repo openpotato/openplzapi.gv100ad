@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/OpenPlzApi.GV100AD.csproj" />
+  <Project Path="test/Xunit/OpenPlzApi.GV100AD.XUnit.csproj" />
+</Solution>
